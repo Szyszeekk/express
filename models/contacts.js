@@ -50,10 +50,21 @@ const updateContact = async (contactId, { name, email, phone }) => {
   return contacts[index];
 };
 
+const Contact = require("./Contact");
+
+const updateStatusContact = async (contactId, { favorite }) => {
+  return await Contact.findByIdAndUpdate(
+    contactId,
+    { favorite },
+    { new: true }
+  );
+};
+
 module.exports = {
   listContacts,
   getContactById,
   removeContact,
   addContact,
   updateContact,
+  updateStatusContact,
 };
