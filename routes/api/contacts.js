@@ -1,6 +1,7 @@
 const express = require("express");
 const joi = require("joi");
 const router = express.Router();
+const authMiddleware = require("../../authMiddleware");
 
 const {
   listContacts,
@@ -10,6 +11,8 @@ const {
   updateContact,
   updateStatusContact,
 } = require("../../models/contacts");
+
+router.use(authMiddleware);
 
 router.get("/", async (req, res, next) => {
   try {
