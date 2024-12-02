@@ -16,7 +16,14 @@ router.use(authMiddleware);
 
 router.get("/", async (req, res, next) => {
   try {
-    const contacts = await listContacts();
+    const { page = 1, limit = 20, favorite } = req.query;
+
+    // Konwertowanie na liczby
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+
+    const contacts = await listContacts(pageNum, limitNum, favorite);
+
     res.status(200).json(contacts);
   } catch (error) {
     next(error);

@@ -3,8 +3,11 @@ const Contact = require("./Contact");
 
 const contactsPath = path.join(__dirname, "./contacts.json");
 
-const listContacts = async () => {
-  return await Contact.find();
+const listContacts = async (page = 1, limit = 20, favorite) => {
+  const skip = (page - 1) * limit;
+  const query = favorite !== undefined ? { favorite } : {};
+
+  return await Contact.find(query).skip(skip).limit(limit).exec();
 };
 
 const getContactById = async (contactId) => {
