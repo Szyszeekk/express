@@ -6,14 +6,14 @@ const User = require("../../../models/User");
 
 const router = express.Router();
 
-router.post("/login", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     const schema = joi.object({
       email: joi.string().email().required(),
       password: joi.string().required(),
     });
 
-    const { error } = schema.validate(req.doby);
+    const { error } = schema.validate(req.body);
 
     if (error) {
       return res.status(400).json({
@@ -43,7 +43,7 @@ router.post("/login", async (req, res, next) => {
       });
     }
 
-    const payload = { id: user_id };
+    const payload = { id: user.id };
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });

@@ -4,7 +4,7 @@ const User = require("../../../models/User");
 
 const router = express.Router();
 
-router.post("/logout", authMiddleware, async (req, res, next) => {
+router.post("/", authMiddleware, async (req, res, next) => {
   try {
     const user = req.user;
 

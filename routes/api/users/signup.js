@@ -5,7 +5,7 @@ const User = require("../../../models/User");
 
 const router = express.Router();
 
-router.post("/signup", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     const schema = joi.object({
       email: joi.string().email().required(),
