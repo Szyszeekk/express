@@ -19,7 +19,10 @@ app.use(express.json());
 
 connectDB();
 
+app.use(express.static("public"));
+
 app.use("/api/contacts", contactsRouter);
+console.log("Registering signup route...");
 app.use("/api/users/signup", signupRouter);
 app.use("/api/users/login", loginRouter);
 app.use("/api/users/logout", logoutRouter);

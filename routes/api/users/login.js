@@ -8,14 +8,17 @@ const router = express.Router();
 
 router.post("/", async (req, res, next) => {
   try {
+    console.log("Login request received:", req.body);
+
+    // Walidacja
     const schema = joi.object({
       email: joi.string().email().required(),
       password: joi.string().required(),
     });
 
     const { error } = schema.validate(req.body);
-
     if (error) {
+      console.error("Validation error:", error.details[0].message);
       return res.status(400).json({
         status: "400 Bad Request",
         contentType: "application/json",
@@ -24,8 +27,9 @@ router.post("/", async (req, res, next) => {
     }
 
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
+    console.log("User found:", user);
+
     if (!user) {
       return res.status(401).json({
         status: "401 Unauthorized",
@@ -35,6 +39,8 @@ router.post("/", async (req, res, next) => {
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    console.log("Password comparison result:", isPasswordCorrect);
+
     if (!isPasswordCorrect) {
       return res.status(401).json({
         status: "401 Unauthorized",
@@ -47,6 +53,7 @@ router.post("/", async (req, res, next) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
+    console.log("Generated token:", token);
 
     user.token = token;
     await user.save();
@@ -63,6 +70,7 @@ router.post("/", async (req, res, next) => {
       },
     });
   } catch (error) {
+    console.error("Login error:", error.message);
     next(error);
   }
 });
