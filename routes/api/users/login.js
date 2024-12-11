@@ -8,9 +8,6 @@ const router = express.Router();
 
 router.post("/", async (req, res, next) => {
   try {
-    console.log("Login request received:", req.body);
-
-    // Walidacja
     const schema = joi.object({
       email: joi.string().email().required(),
       password: joi.string().required(),
@@ -28,7 +25,6 @@ router.post("/", async (req, res, next) => {
 
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    console.log("User found:", user);
 
     if (!user) {
       return res.status(401).json({
@@ -39,7 +35,6 @@ router.post("/", async (req, res, next) => {
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    console.log("Password comparison result:", isPasswordCorrect);
 
     if (!isPasswordCorrect) {
       return res.status(401).json({
@@ -53,10 +48,16 @@ router.post("/", async (req, res, next) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
+
     console.log("Generated token:", token);
 
     user.token = token;
     await user.save();
+
+    console.log("User after save:", user);
+
+    const updatedUser = await User.findById(user.id);
+    console.log("Updated user:", updatedUser);
 
     res.status(200).json({
       status: "200 OK",

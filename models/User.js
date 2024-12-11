@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Schema } = mongoose; // Destrukturyzacja
+const { Schema } = mongoose;
 
 const userSchema = new Schema({
   password: {
@@ -24,7 +24,7 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
-  // avatarURL: { type: String },
+  avatarURL: { type: String },
 });
 
 const User = mongoose.model("User", userSchema);

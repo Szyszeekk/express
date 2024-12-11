@@ -8,6 +8,7 @@ const signupRouter = require("./routes/api/users/signup");
 const loginRouter = require("./routes/api/users/login");
 const logoutRouter = require("./routes/api/users/logout");
 const currentRouter = require("./routes/api/users/current");
+const avatarsRouter = require("./routes/api/users/avatars");
 
 const app = express();
 
@@ -22,11 +23,11 @@ connectDB();
 app.use(express.static("public"));
 
 app.use("/api/contacts", contactsRouter);
-console.log("Registering signup route...");
 app.use("/api/users/signup", signupRouter);
 app.use("/api/users/login", loginRouter);
 app.use("/api/users/logout", logoutRouter);
 app.use("/api/users/current", currentRouter);
+app.use("/api/users/avatars", avatarsRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });

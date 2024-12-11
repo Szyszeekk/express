@@ -1,7 +1,4 @@
-const path = require("path");
 const Contact = require("./Contact");
-
-const contactsPath = path.join(__dirname, "./contacts.json");
 
 const listContacts = async (page = 1, limit = 20, favorite) => {
   const skip = (page - 1) * limit;

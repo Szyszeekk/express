@@ -18,7 +18,6 @@ router.get("/", async (req, res, next) => {
   try {
     const { page = 1, limit = 20, favorite } = req.query;
 
-    // Konwertowanie na liczby
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);
 
@@ -112,7 +111,6 @@ router.patch("/:contactId/favorite", async (req, res, next) => {
   try {
     const { contactId } = req.params;
 
-    // Walidacja pola favorite
     const { error } = joi
       .object({
         favorite: joi.boolean().required(),
