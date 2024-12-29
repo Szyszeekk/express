@@ -34,6 +34,14 @@ router.post("/", async (req, res, next) => {
       });
     }
 
+    if (!user.verify) {
+      return res.status(403).json({
+        status: "403 Forbidden",
+        contentType: "application/json",
+        responseBody: { message: "Email not verified" },
+      });
+    }
+
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {

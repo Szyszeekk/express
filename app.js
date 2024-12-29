@@ -9,6 +9,8 @@ const loginRouter = require("./routes/api/users/login");
 const logoutRouter = require("./routes/api/users/logout");
 const currentRouter = require("./routes/api/users/current");
 const avatarsRouter = require("./routes/api/users/avatars");
+const verifyRouter = require("./routes/api/users/verify");
+const resendVerifyRouter = require("./routes/api/users/resendVerify");
 
 const app = express();
 
@@ -28,6 +30,8 @@ app.use("/api/users/login", loginRouter);
 app.use("/api/users/logout", logoutRouter);
 app.use("/api/users/current", currentRouter);
 app.use("/api/users/avatars", avatarsRouter);
+app.use("/api/users/verify", verifyRouter);
+app.use("/api/users/verify/resend", resendVerifyRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });

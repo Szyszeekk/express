@@ -1,13 +1,18 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const joi = require("joi");
-const jwt = require("jsonwebtoken");
+const { v4: uuidv4 } = require("uuid");
+const sgMail = require("@sendgrid/mail");
 const User = require("../../../models/User");
 const gravatar = require("gravatar");
 
 const router = express.Router();
 
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 router.post("/", async (req, res, next) => {
+  console.log("Request body:", req.body);
+
   try {
     const schema = joi.object({
       email: joi.string().email().required(),
@@ -15,6 +20,7 @@ router.post("/", async (req, res, next) => {
     });
 
     const { error } = schema.validate(req.body);
+    console.log("Validation Error:", error);
 
     if (error) {
       return res.status(400).json({
@@ -42,19 +48,26 @@ router.post("/", async (req, res, next) => {
 
     const avatarURL = gravatar.url(email, { s: "200", r: "pg", d: "mm" });
 
+    const verificationToken = uuidv4();
+
     const newUser = new User({
       email,
       password: hashedPassword,
       avatarURL,
+      verificationToken,
     });
 
-    // Generowanie tokena
-    const payload = { id: newUser._id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const verificationLink = `${process.env.BASE_URL}/auth/verify/${verificationToken}`;
 
-    newUser.token = token;
+    const msg = {
+      to: email,
+      from: process.env.EMAIL_USER,
+      subject: "Verify your email",
+      text: `Please verify your email by clicking the following link: ${verificationLink}`,
+      html: `<p>Please verify your email by clicking the following link: <a href="${verificationLink}">${verificationLink}</a></p>`,
+    };
+
+    await sgMail.send(msg);
 
     await newUser.save();
 
@@ -66,7 +79,6 @@ router.post("/", async (req, res, next) => {
           email: newUser.email,
           subscription: newUser.subscription,
           avatarURL: newUser.avatarURL,
-          token,
         },
       },
     });
